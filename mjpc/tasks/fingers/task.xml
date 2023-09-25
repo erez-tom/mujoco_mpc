@@ -1,7 +1,7 @@
 <mujoco model="Free-Floating Fingers">
   <include file="../common.xml"/>
 
-  <option timestep="0.001" cone="elliptic" noslip_iterations="5" integrator="implicit"/>
+  <option timestep="0.001" cone="elliptic" integrator="implicit"/>
   <size memory="1M"/>
 
   <custom>
@@ -14,7 +14,12 @@
     <numeric name="sampling_spline_points" data="5" />
     <numeric name="sampling_exploration" data="0.04" />
     <numeric name="robust_xfrc" data="0.015" />
-    <numeric name="gradient_spline_points" data="6" />
+    <numeric name="estimator" data="1" />
+    <numeric name="estimator_sensor_start" data="3" />
+    <numeric name="estimator_number_sensor" data="14" />
+    <numeric name="estimator_timestep" data="0.005" />
+    <numeric name="batch_configuration_length" data="6" />
+    <numeric name="batch_scale_prior" data="1.0e-3" />
   </custom>
 
   <keyframe>
@@ -99,19 +104,28 @@
     <intvelocity name="B_z" site="finger_b" refsite="world" actrange="0 1.4" ctrlrange="-.99 .99" ctrllimited="true" kp="1000" gear="0 0 1 0 0 0"/>
   </actuator>
   <sensor>
+    <!-- cost terms -->
     <user name="Reach" dim="6" user="2 0.35 0 1 0.02"/>
     <user name="Bring" dim="3" user="6 1 0 5 0.05"/>
     <user name="Control" dim="6" user="6 .05 0 1 0.01"/>
-    <framepos name="finger_a" objtype="body" objname="finger_a"/>
-    <framepos name="finger_b" objtype="body" objname="finger_b"/>
-    <framepos name="object" objtype="body" objname="object"/>
+
+    <!-- estimator -->
     <framepos name="0" objtype="site" objname="0"/>
     <framepos name="1" objtype="site" objname="1"/>
     <framepos name="2" objtype="site" objname="2"/>
     <framepos name="0t" objtype="site" objname="0t"/>
     <framepos name="1t" objtype="site" objname="1t"/>
     <framepos name="2t" objtype="site" objname="2t"/>
+    <framepos name="finger_a" objtype="body" objname="finger_a"/>
+    <framepos name="finger_b" objtype="body" objname="finger_b"/>
+    <framelinvel name="linvel_object" objtype="body" objname="object"/>
+    <frameangvel name="angvel_object" objtype="body" objname="object"/>
+    <framelinvel name="linvel_target" objtype="body" objname="target"/>
+    <frameangvel name="angvel_target" objtype="body" objname="target"/>
+    <framelinvel name="vel_finger_a" objtype="body" objname="finger_a"/>
+    <framelinvel name="vel_finger_b" objtype="body" objname="finger_b"/>
+
+    <!-- residual components -->
+    <framepos name="object" objtype="body" objname="object"/>
   </sensor>
 </mujoco>
-
-
